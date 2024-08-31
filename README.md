@@ -8,7 +8,7 @@ Configure the application.properties file.
 
 **Step 3:**
 Download and launch the back-end base from the provided URL.
-url:
+url: https://github.com/TrungAug/project_001_dentist_web-be
 
 **Project Overview Image**
 
