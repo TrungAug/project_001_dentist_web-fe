@@ -1,0 +1,249 @@
+<div class="vertical  dark ">
+    <div class="wrapper">
+        <nav class="topnav navbar navbar-light justify-content-end" ng-include="'component/admin-nav.html'">
+        </nav>
+        <aside class="sidebar-left border-right shadow" id="leftSidebar" ng-include="'component/admin-aside.html'"
+            data-simplebar>
+        </aside>
+        <main role="main" class="main-content" ng-controller="AdminDentalStaffController">
+            <div class="container-fluid">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                    </ol>
+                </nav>
+                <div class="row justify-content-center mb-3">
+                    <div class="d-flex flex-items-center flex-justify-between custom-heading">
+                        <h3 class="text-secondary">Quản lý thông tin nhân viên</h3>
+                    </div>
+                    <div class="custom-hr"></div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-12">
+                        <p class="card-text"></p>
+                        <div class="row my-4">
+                            <!-- Small table -->
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <!-- tabbb -->
+                                        <ul class="nav nav-pills mb-3" id="managedentalStaffs" role="tablist">
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link active" id="form-tab-dentalStaff"
+                                                    data-bs-toggle="tab"
+                                                    data-bs-target="#form-tab-pane-manage-dentalStaffs" type="button"
+                                                    role="tab" aria-controls="form-tab-pane-manage-dentalStaffs"
+                                                    aria-selected="true">
+                                                    <i class="bi bi-pencil-square"></i> Quản lý
+                                                </button>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link" id="list-tab-dentalStaff" data-bs-toggle="tab"
+                                                    data-bs-target="#list-tab-pane-dentalStaff" role="tab"
+                                                    aria-controls="list-tab-pane-dentalStaff" aria-selected="false">
+                                                    <i class="bi bi-list-check"></i> Danh sách
+                                                </button>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content" id="managedentalStaffsTabContent">
+                                            <div class="tab-pane fade show active"
+                                                id="form-tab-pane-manage-dentalStaffs" role="tabpanel"
+                                                aria-labelledby="form-tab-dentalStaff" tabindex="0">
+                                                <div class="row align-items-center justify-content-center">
+                                                    <div class="col-lg col-sm-12 p-3 me-3 d-flex flex-column flex-wrap">
+                                                        <div class="row">
+                                                            <div class="col-lg-12 col-md-12">
+                                                                <div class="form-outline mb-3">
+                                                                    <label class="form-label"
+                                                                        for="dentalStaffImage">Chọn
+                                                                        ảnh
+                                                                        Bác sĩ</label>
+                                                                    <input type="file" accept="image/*" multiple id="filesStaffCloudinary"
+                                                                        onchange="angular.element(this).scope().uploadImg(this.files)"
+                                                                        id="dentalStaffImage"
+                                                                        class="form-control">
+                                                                    <div class="p-3 mt-3 d-flex justify-content-center flex-wrap"
+                                                                        style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); border-radius: 10px;"
+                                                                        ng-if="imageUrlStaff">
+                                                                        <label class="m-2"
+                                                                            title="Double click để xóa">
+                                                                            <img ng-src="{{imageUrlStaff}}"
+                                                                                ng-dblclick="deleteImgStaff()"
+                                                                                width="100" height="100">
+                                                                            <p>{{filename}}</p>
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-lg-6 col-md-12">
+                                                                <div class="form-outline mb-3">
+                                                                    <label class="form-label"
+                                                                        for="dentalStaffFullName">Tên
+                                                                        nhân viên</label>
+                                                                    <input type="text" id="dentalStaffFullName"
+                                                                        ng-model="formDentalStaff.fullName"
+                                                                        class="form-control" placeholder="Tên nhân viên"
+                                                                        required>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-lg-6 col-md-12">
+                                                                <div class="form-row">
+                                                                    <div class="form-group col-md-8">
+                                                                        <label for="departmentId">Phòng ban</label>
+                                                                        <select id="departmentId"
+                                                                            class="form-control select2-department"
+                                                                            ng-model="formDentalStaff.departmentId"
+                                                                            ng-options="d.departmentId
+                                                                            as d.departmentName for d in listDepartmentDB">
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-lg-6 col-md-12">
+                                                                <div class="form-outline mb-3">
+                                                                    <label class="form-label"
+                                                                        for="dentalStaffPhoneNumber">Số
+                                                                        điện thoại</label>
+                                                                    <input type="text" id="dentalStaffPhoneNumber"
+                                                                        ng-model="formDentalStaff.phoneNumber"
+                                                                        class="form-control"
+                                                                        placeholder="Nhập số điện thoại">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-6 col-md-12">
+                                                                <div class="form-row">
+                                                                    <div class="form-group col-md-8">
+                                                                        <label for="dentalStaffGender">Giới
+                                                                            tính</label>
+                                                                        <select id="dentalStaffGender"
+                                                                            class="form-control select2-gender"
+                                                                            ng-model="formDentalStaff.gender"
+                                                                            ng-options="d.genderId as d.genderName for d in listGenderTypeDB">
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-6 col-md-12">
+                                                                <div class="form-outline mb-3">
+                                                                    <label class="form-label"
+                                                                        for="dentalStaffBirthday">Ngày
+                                                                        sinh</label>
+                                                                    <input type="date" id="dentalStaffBirthday"
+                                                                        ng-model="formDentalStaff.birthday"
+                                                                        class="form-control" placeholder="Ngày sinh">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-6 col-md-12">
+                                                                <div class="form-floating mb-3">
+                                                                    <textarea ng-model="formDentalStaff.address"
+                                                                        class="form-control" placeholder="Nhập địa chỉ"
+                                                                        id="dentalStaffAddress"
+                                                                        style="height: 100px"></textarea>
+                                                                    <label for="dentalStaffAddress">Địa
+                                                                        chỉ</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-6 col-md-12">
+                                                                <div class="custom-control custom-switch">
+                                                                    <input type="checkbox" class="custom-control-input"
+                                                                        id="RepeatSwitchDeletedentalStaff"
+                                                                        ng-model="formDentalStaff.deleted"
+                                                                        ng-checked="formDentalStaff.deleted">
+                                                                    <label class="custom-control-label"
+                                                                        for="RepeatSwitchDeletedentalStaff">Ngưng công
+                                                                        tác</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex justify-content-center mt-3">
+                                                            <button ng-click="createdentalStaff()"
+                                                                class="btn btn-success m-2"
+                                                                ng-show="!isEditDentalStaff&&!isLoadingCreate">Tạo
+                                                                mới</button>
+                                                            <button class="btn btn-outline-success" type="button"
+                                                                disabled ng-show="isLoadingCreate">
+                                                                <span class="spinner-border spinner-border-sm"
+                                                                    role="status" aria-hidden="true"></span>
+                                                                Đang xử lý...
+                                                            </button>
+                                                            <button ng-click="updatedentalStaff()"
+                                                                class="btn btn-primary m-2"
+                                                                ng-show="isEditDentalStaff&&!isLoadingUpdate">Cập
+                                                                nhật</button>
+                                                            <button class="btn btn-outline-primary" type="button"
+                                                                disabled ng-show="isLoadingUpdate">
+                                                                <span class="spinner-border spinner-border-sm"
+                                                                    role="status" aria-hidden="true"></span>
+                                                                Đang xử lý...
+                                                            </button>
+                                                            <button ng-click="resetForm()" class="btn btn-info m-2">Làm
+                                                                mới</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="list-tab-pane-dentalStaff" role="tabpanel"
+                                                aria-labelledby="list-tab-dentalStaff" tabindex="0">
+                                                <div class="card">
+                                                    <table class="table datatables" id="dataTable-list-dentalStaff">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Hình ảnh</th>
+                                                                <th>Mã nhân viên</th>
+                                                                <th>Tên nhân viên</th>
+                                                                <th>Điện thoại</th>
+                                                                <th>Địa chỉ</th>
+                                                                <th>Phòng ban</th>
+                                                                <th>Trạng thái</th>
+                                                                <th>Thao tác</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr ng-repeat="d in listdentalStaffDB">
+                                                                <td>
+                                                                    <img ng-src="{{d.imageURL}}"
+                                                                        class="img-thumbnail" alt="..." width="70"
+                                                                        height="70">
+                                                                </td>
+                                                                <td>{{d.dentalStaffId}}</td>
+                                                                <td>{{d.fullname}}</td>
+                                                                <td>{{d.phoneNumber}}</td>
+                                                                <td>{{d.address}}</td>
+                                                                <td>{{d.department.departmentName}}</td>
+                                                                <td>{{d.deleted?'Thôi việc':'Đang làm'}}</td>
+                                                                <td><button
+                                                                        class="btn btn-sm dropdown-toggle more-horizontal"
+                                                                        type="button" data-toggle="dropdown"
+                                                                        aria-haspopup="true" aria-expanded="false">
+                                                                        <span class="text white">...</span>
+                                                                    </button>
+                                                                    <div class="dropdown-menu dropdown-menu-right"
+                                                                        style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); border-radius: 10px;">
+                                                                        <a class="dropdown-item text-primary"
+                                                                            ng-click="editDentalStaff(d,$event)"
+                                                                            href="#" style="font-size: 18px;">Sửa</a>
+                                                                        <a class="dropdown-item text-danger"
+                                                                            ng-click="deletedentalStaff(d,$event)"
+                                                                            ng-show="!d.deleted" href="#"
+                                                                            style="font-size: 18px;">Xóa</a>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- end tabb -->
+                                    </div>
+                                </div>
+                            </div> <!-- simple table -->
+                        </div> <!-- end section -->
+                    </div> <!-- .col-12 -->
+                </div> <!-- .row -->
+            </div> <!-- .container-fluid -->
+        </main>
+    </div>
+</div>

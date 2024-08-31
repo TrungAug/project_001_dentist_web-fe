@@ -1,0 +1,218 @@
+<div class="vertical  dark ">
+    <div class="wrapper">
+        <nav class="topnav navbar navbar-light justify-content-end" ng-include="'component/admin-nav.html'">
+        </nav>
+        <aside class="sidebar-left border-right shadow" id="leftSidebar" ng-include="'component/admin-aside.html'">
+        </aside>
+        <main role="main" class="main-content" ng-controller="AdminListInvoice">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                </ol>
+            </nav>
+            <div class="container-fluid">
+                <div class="row justify-content-center">
+                    <div class="col-12">
+                        <div class="row my-4">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <ul class="nav nav-tabs nav-justified mb-3">
+                                            <li class="nav-item">
+                                                <a class="nav-link" ng-class="{active: isSelected(-1)}"
+                                                    ng-click="selectTab(-1,$event)" href="#">Danh sách hóa đơn</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" ng-class="{active: isSelected(-2)}"
+                                                    ng-click="selectTab(-2,$event)" href="#">Hóa đơn thành công</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" ng-class="{active: isSelected(-3)}"
+                                                    ng-click="selectTab(-3,$event)" href="#">Hóa đơn đã hủy</a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div class="tab-pane" ng-class="{ 'active show': isSelected(-1) }">
+                                                <button class="btn btn-outline-primary" type="button"
+                                                    data-bs-toggle="collapse" data-bs-target="#collapseFilterAppoinment"
+                                                    aria-expanded="false" aria-controls="collapseFilterAppoinment">
+                                                    <i class="bi bi-funnel"></i>
+                                                    Bộ lọc
+                                                </button>
+                                                <button class="btn btn-outline-success" type="button"
+                                                    ng-click="getListAppointmentServiceClear()">
+                                                    <i class="bi bi-arrow-clockwise"></i>
+                                                    Làm mới
+                                                </button>
+                                                <div class="collapse m-3" id="collapseFilterAppoinment">
+                                                    <div class="card card-body">
+                                                        <div class="row">
+                                                            <div class="col-lg-6 overflow-auto">
+                                                                <div class="form-group">
+                                                                    <label for="formAppoinmentSearchDate">Lọc theo
+                                                                        ngày</label>
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-prepend">
+                                                                            <div class="input-group-text"
+                                                                                id="button-addon-date"><span
+                                                                                    class="fe fe-calendar fe-16"></span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <input type="text"
+                                                                            class="form-control drgpicker"
+                                                                            id="formAppoinmentSearchDate"
+                                                                            ng-model="formAppoinmentFilter.filterDate"
+                                                                            autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-3">
+                                                                <button class="btn btn-light"
+                                                                    style="color: blue;border: 2px solid blue;"
+                                                                    ng-click="filterDate()">Tìm
+                                                                    kiếm</button>
+                                                            </div>
+                                                            <div class=" col-lg-3">
+                                                                <Bỏ class="btn btn-light"
+                                                                    style="color: rgb(0, 0, 0);border: 2px solid  rgb(0, 0, 0); float: right;"
+                                                                    ng-click="getListAppointmentServiceClear()">
+                                                                    Bỏ
+                                                                    tìm kiếm
+                                                                    </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <table class="table table-hover datatables" id="dataTable-list-invoice">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>STT</th>
+                                                            <th>Ngày tạo</th>
+                                                            <th>Họ và tên bệnh nhân</th>
+                                                            <th>Dịch vụ</th>
+                                                            <th>Tổng tiền</th>
+                                                            <th>Trạng thái</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="appointmentWithServices in appointments">
+                                                            <td>{{
+                                                                $index +1 }}
+                                                            </td>
+                                                            <td>{{
+                                                                appointmentWithServices.appointment.appointmentDate |
+                                                                date:'dd/MM/yyyy'}}
+                                                            </td>
+                                                            <td>{{
+                                                                appointmentWithServices.appointment.patient.fullName }}
+                                                            </td>
+                                                            <td>
+                                                                <span
+                                                                    ng-repeat="service in appointmentWithServices.services">
+                                                                    {{ service.serviceName
+                                                                    }} - (Giá:{{(service.price).toLocaleString('vi',
+                                                                    { style: 'currency', currency: 'VND' }) }})<span
+                                                                        ng-if="$index < appointmentWithServices.services.length - 1">,<br>
+                                                                        <hr>
+                                                                    </span><span
+                                                                        ng-if="$index === appointmentWithServices.services.length - 1">.</span>
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                {{
+                                                                calculateTotalPrice(appointmentWithServices.services).toLocaleString('vi',
+                                                                { style: 'currency', currency: 'VND' }) }}
+                                                            </td>
+                                                            <td>
+                                                                <div
+                                                                    ng-if="appointmentWithServices.services.length > 0">
+                                                                    <!-- <span ng-style="{'color': getStatusColor(appointmentWithServices.status)}">{{appointmentWithServices.status ? "Đã thanh
+                                                                        toán" : "Chưa thanh toán"}} -->
+                                                                    <!-- </span> -->
+                                                                    <span
+                                                                        ng-style="{'color': getStatusColor(appointmentWithServices.status)}">
+                                                                        {{appointmentWithServices.status ? "Đã thanh toán" : "Chưa thanh toán"}}
+                                                                    </span>
+                                                                </div>
+                                                                <div
+                                                                    ng-if="appointmentWithServices.services.length <= 0">
+                                                                    <span style="color: orange;">Cuộc hẹn đang xử
+                                                                        lí</span>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <button
+                                                                    class="btn btn-sm dropdown-toggle more-horizontal"
+                                                                    type="button" data-toggle="dropdown"
+                                                                    aria-haspopup="true" aria-expanded="false">
+                                                                    <span class="text white">...</span>
+                                                                </button>
+                                                                <div class="dropdown-menu dropdown-menu-right"
+                                                                    style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); border-radius: 10px;">
+                                                                    <a class="dropdown-item "
+                                                                        ng-click="editInvoice(appointmentWithServices)"
+                                                                        href="#" style="font-size: 18px;color: #666666"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#myModalDetail">Xem chi tiết
+                                                                    </a>
+                                                                    <a class="dropdown-item text-primary"
+                                                                        ng-click="editInvoice(appointmentWithServices)"
+                                                                        href="#" style="font-size: 18px;"
+                                                                        data-bs-toggle="modal" data-bs-target="#myModal"
+                                                                        ng-show="!appointmentWithServices.status && appointmentWithServices.services.length > 0">Tiến
+                                                                        hành thanh
+                                                                        toán</a>
+                                                                    <!-- <a class="dropdown-item text-danger"
+                                                                        ng-click="deleteAppoinment(a,$event)" href="#"
+                                                                        style="font-size: 18px;"
+                                                                        ng-show="!appointmentWithServices.status  > 0">Hủy
+                                                                        hóa đơn</a> -->
+                                                                </div>
+                                                            </td>
+
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="tab-pane" ng-class="{ 'active show': isSelected(-2) }">
+
+                                            </div>
+                                            <div class="tab-pane" ng-class="{ 'active show': isSelected(-3) }">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#eventDetailsListAppoinment" id="btnEventDetailsListAppoinment" hidden>
+            Xem chi tiết cuộc hẹn
+        </button>
+        <div class="modal fade" id="eventDetailsListAppoinment" tabindex="-1"
+            aria-labelledby="eventDetailsListAppoinmentLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="eventDetailsListAppoinmentLabel">Chi tiết cuộc hẹn</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="eventDetailsListAppoinmentBody">
+                        <!-- Thông tin sự kiện -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-info" data-bs-dismiss="modal">Sửa cuộc hẹn</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Đóng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

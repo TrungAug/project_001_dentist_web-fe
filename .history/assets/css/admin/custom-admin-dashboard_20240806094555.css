@@ -1,0 +1,13 @@
+#filterByMoth {
+    border: none; 
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border-radius: .25rem;
+    padding: .375rem .75rem; 
+}
+
+#filterByMoth:focus {
+    border: none; 
+    box-shadow: none; 
+    outline: none;
+}

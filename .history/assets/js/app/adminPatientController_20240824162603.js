@@ -1,0 +1,399 @@
+app.controller('AdminPatientController', function ($scope, $http, $rootScope, $location, $timeout, API, adminBreadcrumbService, processSelect2Service) {
+    let url = API.getBaseUrl();
+    let headers = API.getHeaders();
+    adminBreadcrumbService.generateBreadcrumb()
+
+    $scope.initData = () => {
+        $scope.listMedicalHistoriesDetailDB = [];
+        $scope.listMedicalHistoriesOfPatient = [];
+        $scope.isUpdatePatient = false
+        $scope.isLoadingCreate = false
+        $scope.isLoadingUpdate = false
+        $scope.formPatient = {
+            patientId: -1,
+            fullName: "",
+            citizenIdentificationNumber: "",
+            phoneNumber: "",
+            gender: "",
+            imageURL: "",
+            birthday: new Date("1/01/1999"),
+            deleted: false
+        }
+    }
+
+    $scope.initUI = () => {
+
+
+        $timeout(() => {
+            $('.select2').select2(
+                {
+                    theme: 'bootstrap4',
+                    placeholder: '---Chọn giới tính---',
+                    allowClear: true
+                }).val(null).trigger('change');
+            $('.select2-multi').select2(
+                {
+                    multiple: true,
+                    theme: 'bootstrap4',
+                    placeholder: '---Chọn tiền sử bệnh---'
+                }).val(null).trigger('change');
+        }, 1000)
+
+        $('#managePatientsModalMedicalHistory').on('change', function () {
+            $timeout(function () {
+                let selectedVals = $('#managePatientsModalMedicalHistory').val()
+                $scope.medicalHistoriesSelections = processSelect2Service.processSelect2Data(selectedVals)
+                console.log("$scope.medicalHistoriesSelections", $scope.medicalHistoriesSelections);
+            });
+        });
+
+        $('#managePatientsModalpatientsGender').on('change', function () {
+            $timeout(function () {
+                $scope.formPatient.gender = $('#managePatientsModalpatientsGender').val();
+            });
+        });
+    }
+
+    $scope.createMedicalHistoryDetails = (patientId, medicalHistoryDetailId) => {
+        $scope.formMedicalHistoryDetail = {
+            medicalHistoryDetailId: -1,
+            patientId: patientId,
+            medicalHistoryId: medicalHistoryDetailId,
+        };
+        var requestMedicalHistoryDetailJSON = angular.toJson($scope.formMedicalHistoryDetail)
+        $http.post(url + '/medical-history-detail', requestMedicalHistoryDetailJSON, { headers: headers })
+    }
+
+    $scope.getListMedicalHistoriesDetail = () => {
+        $http.get(url + "/medical-history-detail-except-deleted", { headers: headers }).then(response => {
+            $scope.listMedicalHistoriesDetailDB = response.data
+            console.log(" $scope.listMedicalHistoriesDetailDB", $scope.listMedicalHistoriesDetailDB);
+        }).catch(err => {
+            new Noty({
+                text: 'Đã xảy ra lỗi!',
+                type: 'error',
+                timeout: 3000
+            }).show();
+        })
+    };
+
+    $scope.showMedicalHistories = (patientId) => {
+        const result = $scope.listMedicalHistoriesDetailDB.filter(item => {
+            if (item.patient != null) {
+                return item.patient.patientId === patientId;
+            }
+        }
+        );
+        return result;
+    };
+
+    $scope.showMedicalHistoryOfPatient = (patientId) => {
+        const result = $scope.listMedicalHistoriesDetailDB.filter(item => {
+            if (item.patient != null) {
+                return item.patient.patientId === patientId;
+            }
+        });
+        result.forEach(item => {
+            if (item.medicalHistory) {
+                $scope.listMedicalHistoriesOfPatient.push(item.medicalHistory);
+            }
+        });
+        console.table($scope.listMedicalHistoriesOfPatient);
+    };
+
+    $scope.listGenderTypeDB = [
+        { genderId: 'MALE', genderName: 'Nam' },
+        { genderId: 'FEMALE', genderName: 'Nữ' },
+        { genderId: 'UNISEX', genderName: 'Khác' }
+    ];
+
+    $scope.getMedicalHistories = function () {
+        $http.get(url + '/medical-history', { headers: headers }).then(function (response) {
+            $scope.listMedicalHistoryDB = response.data;
+        }, function (error) {
+            console.error('Error fetching medical histories:', error);
+        });
+
+    };
+
+    $scope.getGenderText = function (gender) {
+        switch (gender) {
+            case 'MALE':
+                return 'Nam';
+            case 'FEMALE':
+                return 'Nữ';
+            case 'OTHER':
+                return 'Khác';
+            default:
+                return '';
+        }
+    };
+
+    $scope.formatDate = function (date) {
+        var d = new Date(date);
+        if (isNaN(d.getTime())) return '';
+        var day = ('0' + d.getDate()).slice(-2);
+        var month = ('0' + (d.getMonth() + 1)).slice(-2);
+        var year = d.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
+
+    $scope.getListPatient = () => {
+        $http.get(url + '/patient-except-deleted', { headers: headers }).then(respone => {
+            $scope.listPatientDB = respone.data
+            if ($.fn.DataTable.isDataTable('#dataTable-list-patient')) {
+                $('#dataTable-list-patient').DataTable().clear().destroy();
+            }
+            $(document).ready(function () {
+                $('#dataTable-list-patient').DataTable({
+                    autoWidth: true,
+                    "lengthMenu": [
+                        [10, 20, 30, -1],
+                        [10, 20, 30, "All"]
+                    ],
+                    language: {
+                        sProcessing: "Đang xử lý...",
+                        sLengthMenu: "Hiển thị _MENU_ mục",
+                        sZeroRecords: "Không tìm thấy dòng nào phù hợp",
+                        sInfo: "Đang hiển thị _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                        sInfoEmpty: "Đang hiển thị 0 đến 0 trong tổng số 0 mục",
+                        sInfoFiltered: "(được lọc từ _MAX_ mục)",
+                        sInfoPostFix: "",
+                        sSearch: "Tìm kiếm:",
+                        sUrl: "",
+                        oPaginate: {
+                            sFirst: "Đầu",
+                            sPrevious: "Trước",
+                            sNext: "Tiếp",
+                            sLast: "Cuối"
+                        }
+                    },
+                    "ordering": false
+                });
+            });
+        }).catch(err => {
+            console.log("Error", err);
+        })
+    }
+
+    $scope.crudPatient = () => {
+        var currentDate = new Date();
+        $scope.formPatient = {
+            patientId: -1,
+            fullName: '',
+            Type: '',
+            CitizenIdentificationNumber: '',
+            phoneNumber: '',
+            gender: '',
+            birthday: new Date("01/01/1999"),
+            imageURL: 'abc.jpg',
+            deleted: false
+        };
+
+        $scope.formMedicalHistoryDetail = {
+            medicalHistoryDetailId: -1,
+            patientId: '',
+            medicalHistoryId: '',
+        };
+
+        $scope.medicalHistoriesSelections = []
+
+        $scope.validationForm = () => {
+            var valid = false;
+            $scope.processSelect2Data = () => {
+                if (typeof $scope.formPatient.gender === 'string' && $scope.formPatient.gender.includes(':')) {
+                    $scope.formPatient.gender = $scope.formPatient.gender.split(':')[1];
+                }
+            };
+
+            if ($scope.formPatient.fullName == "" || $scope.formPatient.fullName == null) {
+                Swal.fire({
+                    title: "Cảnh báo!",
+                    html: "Vui lòng nhập họ tên!",
+                    icon: "error"
+                });
+            } else if ($scope.formPatient.phoneNumber == "") {
+                Swal.fire({
+                    title: "Cảnh báo!",
+                    html: "Vui lòng nhập số điện thoại!",
+                    icon: "error"
+                });
+            } else if ($scope.formPatient.gender == "" || $scope.formPatient.gender == null) {
+                Swal.fire({
+                    title: "Cảnh báo!",
+                    html: "Vui lòng chọn giới tính!",
+                    icon: "error"
+                });
+            } else if ($scope.formPatient.citizenIdentificationNumber == "" || $scope.formPatient.citizenIdentificationNumber == null) {
+                Swal.fire({
+                    title: "Cảnh báo!",
+                    html: "Vui lòng nhập số CMND/CCCD!",
+                    icon: "error"
+                });
+            } else {
+                $scope.processSelect2Data();
+                valid = true;
+            }
+            return valid;
+        };
+
+        $scope.editPatient = (patient, $event) => {
+            $event.preventDefault()
+            $scope.isUpdatePatient = true
+            if (patient != null) {
+                $scope.formPatient = {
+                    patientId: patient.patientId,
+                    fullName: patient.fullName,
+                    citizenIdentificationNumber: patient.citizenIdentificationNumber,
+                    phoneNumber: patient.phoneNumber,
+                    gender: patient.gender,
+                    imageURL: patient.imageURL,
+                    birthday: new Date(patient.birthday),
+                    deleted: false
+                }
+            }
+
+            $scope.showMedicalHistoryOfPatient(patient.patientId)
+            const firstTabButtonCreate = document.getElementById('form-tab-patient');
+            firstTabButtonCreate.click();
+            var element = document.getElementById('managePatientsModalMedicalHistory');
+            element.disabled = true;
+        }
+
+        $scope.createPatient = () => {
+            if ($scope.formPatient.patientId != -1) {
+                new Noty({
+                    text: 'Thông tin đã có trên hệ thống !',
+                    type: 'error',
+                    timeout: 3000
+                }).show();
+                return
+            }
+            var valid = $scope.validationForm()
+            if (valid) {
+                $scope.isLoadingCreate = true
+                var requestPatientJSON = angular.toJson($scope.formPatient)
+                $http.post(url + '/patient', requestPatientJSON).then(response => {
+                    var idpatient = response.data.patientId;
+                    $scope.medicalHistoriesSelections.forEach(element => {
+                        $scope.createMedicalHistoryDetails(idpatient, element);
+                    });
+                    $timeout(() => {
+                        $scope.isLoadingCreate = false
+                    }, 3000)
+                }).finally(() => {
+                    $timeout(() => {
+                        new Noty({
+                            text: 'Thêm bệnh nhân thành công!',
+                            type: 'success',
+                            timeout: 3000
+                        }).show();
+                        $scope.resetForm()
+                        $scope.getListPatient()
+                        const secondTabButtonCreate = document.getElementById('list-tab-patient');
+                        secondTabButtonCreate.click();
+                    }, 3000)
+                }).catch(err => {
+                    new Noty({
+                        text: 'Thêm bệnh nhân thất bại!',
+                        type: 'error',
+                        timeout: 3000
+                    }).show();
+                });
+            }
+        }
+        $scope.updatePatient = () => {
+            if ($scope.formPatient.patientId == -1) {
+                new Noty({
+                    text: 'Thông tin chưa có trên hệ thống !',
+                    type: 'error',
+                    timeout: 3000
+                }).show();
+                return
+            }
+            var valid = $scope.validationForm()
+            if (valid) {
+                $scope.isLoadingUpdate = true
+                var requestPatientJSON = angular.toJson($scope.formPatient)
+                var patientId = $scope.formPatient.patientId
+                $http.put(url + '/patient/' + patientId, requestPatientJSON, { headers: headers }).then(response => {
+                    $timeout(() => {
+                        $scope.isLoadingUpdate = false
+                    }, 3000)
+
+                }).finally(() => {
+                    $timeout(() => {
+                        new Noty({
+                            text: 'Cập nhật thành công!',
+                            type: 'success',
+                            timeout: 3000
+                        }).show();
+                        $scope.resetForm()
+                        $scope.getListPatient()
+                        const secondTabButtonCreate = document.getElementById('list-tab-patient');
+                        secondTabButtonCreate.click();
+                    }, 3000)
+                }).catch(err => {
+                    new Noty({
+                        text: 'Cập nhật thất bại!',
+                        type: 'error',
+                        timeout: 3000
+                    }).show();
+                })
+            }
+        }
+
+        $scope.deletePatient = (patient, $event) => {
+            $event.preventDefault()
+            var patientId = patient.patientId
+            Swal.fire({
+                text: "Bạn có muốn xóa Bệnh nhân " + patient.fullName + " ?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Trở lại',
+                confirmButtonText: 'Có'
+            }).then(rs => {
+                if (rs.isConfirmed) {
+                    $http.delete(url + '/soft-delete-patient/' + patientId, { headers: headers }).then(response => {
+                        new Noty({
+                            text: 'Xóa thành công!',
+                            type: 'success',
+                            timeout: 3000
+                        }).show();
+                        $scope.getListPatient()
+                    }).catch(err => {
+                        new Noty({
+                            text: 'Xóa thất bại!',
+                            type: 'error',
+                            timeout: 3000
+                        }).show();
+                    })
+                }
+            })
+        }
+
+        $scope.resetForm = () => {
+            $scope.initData()
+            $scope.formMedicalHistoryDetail = {
+                medicalHistoryDetailId: -1,
+                patientId: '',
+                medicalHistoryId: '',
+            };
+            $scope.medicalHistoriesSelections = []
+            $scope.getMedicalHistories();
+            $scope.getListMedicalHistoriesDetail();
+            var element = document.getElementById('managePatientsModalMedicalHistory');
+            element.disabled = false;
+        }
+    }
+    $scope.getMedicalHistories();
+    $scope.initUI()
+    $scope.getListMedicalHistoriesDetail();
+    $scope.crudPatient();
+    $scope.getListPatient()
+    $scope.initData()
+})
+
+

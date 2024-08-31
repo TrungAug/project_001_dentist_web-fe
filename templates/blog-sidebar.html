@@ -1,0 +1,114 @@
+<div ng-controller="BlogController">
+	<!--================ Start Header Menu Area =================-->
+	<header class="header_area" ng-include="'component/header.html'"></header>
+	<!--================ End Header Menu Area =================-->
+	<section class="page-title bg-1">
+		<div class="overlay"></div>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="block text-center">
+						<span class="text-white">Diễn đàn</span>
+						<h1 class="text-capitalize mb-5 text-lg">Đánh giá dịch vụ trên diễn đàn</h1>
+
+						<!-- <ul class="list-inline breadcumb-nav">
+				<li class="list-inline-item"><a href="index.html" class="text-white">Home</a></li>
+				<li class="list-inline-item"><span class="text-white">/</span></li>
+				<li class="list-inline-item"><a href="#" class="text-white-50">Our blog</a></li>
+			</ul> -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="section blog-wrap">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8">
+					<table class="table datatables" id="dataTable-post">
+						<thead>
+							<tr>
+								<!-- Define your headers here -->
+								<th></th>
+
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="p in listPostDB">
+								<td>
+									<div class="blog-item">
+										<div class="blog-item-content">
+											<div class="blog-item-meta mb-3 mt-4">
+												<span class="text-black text-capitalize mr-3"><i
+														class="icofont-calendar mr-1"></i> {{p.createDate}}</span>
+											</div>
+
+											<h2 class="mt-3 mb-3"><a href="blog-single.html">{{p.title}}</a></h2>
+											<div class="blog-thumb">
+												<img ng-src="{{p.image || ''}}" alt="Không có hình ảnh"
+													class="img-fluid w-100" onerror="this.src=''">
+											</div>
+											<div ng-bind-html="p.body"></div>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="col-lg-4">
+					<div class="sidebar-wrap pl-lg-4 mt-5 mt-lg-0">
+						<div class="sidebar-widget latest-post mb-3">
+							<h5>Bài viết nổi bật</h5>
+
+							<div class="py-2">
+								<span class="text-sm text-muted">16 tháng 8, 2024</span>
+								<h6 class="my-2"><a href="#">BÁC SĨ ĐƯỢC HƠN 10 KHÁCH HÀNG ĐẶT CÙNG LÚC LÀ AI ?</a></h6>
+							</div>
+
+							<div class="py-2">
+								<span class="text-sm text-muted">03 tháng 7, 2024</span>
+								<h6 class="my-2"><a href="#">HƠN 50 KHÁCH HÀNG ĐÃ TẨY TRẮNG RĂNG THÀNH CÔNG</a></h6>
+							</div>
+
+							<div class="py-2">
+								<span class="text-sm text-muted">05 tháng 7, 2024</span>
+								<h6 class="my-2"><a href="#">HƠN 200 CA NHỔ RĂNG KHÔN AN TOÀN</a></h6>
+							</div>
+						</div>
+
+						<div class="sidebar-widget schedule-widget mb-3">
+							<h5 class="mb-4">Lịch làm việc</h5>
+
+							<ul class="list-unstyled">
+								<p>Phòng khám nha khoa <span class="text-primary">Tooth Teeth</span> chính thức hoạt
+									động từ 7h30 đến 21h hàng ngày, nhằm đáp ứng tối đa nhu cầu khám chữa răng miệng của
+									Quý khách.</p>
+							</ul>
+
+							<div class="sidebar-contatct-info mt-4">
+								<p class="mb-0">Cần hỗ trợ khẩn cấp?</p>
+								<h3>+84 969 281 254</h3>
+							</div>
+						</div>
+
+						<div class="list-unstyled">
+							<h5>Chúng tôi đã phục vụ hơn 5000+ bệnh nhân</h5>
+							<div class="divider mx-auto my-4"></div>
+							<p>Với hơn mười năm kinh nghiệm, phòng khám nha khoa của chúng tôi đã thành công trong việc
+								cung cấp
+								dịch vụ chăm sóc răng miệng chất lượng cao, phục vụ hơn 5000 bệnh nhân.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+
+	<!-- footer Start -->
+	<footer class="footer section gray-bg" ng-include="'component/footer.html'"></footer>
+	<!--================ End footer Area  =================-->
+</div>

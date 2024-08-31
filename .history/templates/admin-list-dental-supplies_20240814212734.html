@@ -1,0 +1,156 @@
+<div class="vertical  dark ">
+    <div class="wrapper">
+        <nav class="topnav navbar navbar-light justify-content-end" ng-include="'component/admin-nav.html'">
+        </nav>
+        <aside class="sidebar-left border-right shadow" id="leftSidebar" ng-include="'component/admin-aside.html'"
+            data-simplebar>
+        </aside>
+        <main role="main" class="main-content" ng-controller="AdminListDentalSupplies">
+            <div class="container-fluid">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                    </ol>
+                </nav>
+                <div class="d-flex flex-items-center flex-justify-between custom-heading">
+                    <h3 class="text-secondary">Danh sách vật tư nha khoa</h3>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-12">
+                        <p class="card-text"></p>
+                        <div class="row my-4">
+                            <!-- Small table -->
+                            <div class="col-md-12">
+                                <div class="row align-items-center my-3">
+                                    <div class="col">
+                                        <!-- <h2 class="page-title p-0">Đặt lịch</h2> -->
+                                    </div>
+                                    <div class="col-auto">
+                                        <a href="#!admin/save-dental-supplies" type="btn btn-primary"
+                                            style="color: white;" class="btn btn-primary"><span
+                                                class="fe fe-plus fe-16 mr-3"></span>Thêm
+                                            vật tư nha khoa</a>
+                                    </div>
+                                </div>
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <!-- table -->
+                                        <table class="table datatables" id="dataTable-list-service">
+                                            <thead>
+                                                <tr>
+                                                    <th>Mã loại vật tư</th>
+                                                    <th>Tên loại vật tư</th>
+                                                    <th>Nhà phân phối</th>
+                                                    <th>Mô tả</th>
+                                                    <th>Trạng thái</th>
+                                                    <th>Thao tác</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="d in listDentalSuppliesFromDB"
+                                                    class="dentalSupplies_{{d.suppliesId}}">
+                                                    <td>{{d.suppliesId}}</td>
+                                                    <td>{{d.suppliesName}}</td>
+                                                    <td>{{d.distributionSupplies.name}}</td>
+                                                    <td>{{d.description}}</td>
+                                                    <td>
+                                                        <p ng-if="d.deleted" type="text" disabled
+                                                            style="width: 20px; height: 20px; border-radius: 50%; background-color: rgb(239, 17, 17); color: transparent;">
+                                                            Ngừng hoạt động</p>
+                                                        <p ng-if="!d.deleted" type="text" disabled
+                                                            style="width: 20px; height: 20px; border-radius: 50%; background-color: rgb(47, 255, 0); color: transparent;">
+                                                            Đang hoạt động</p>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex">
+                                                            <a type="button" class="text-danger mr-3"
+                                                                ng-click="deleteDentalSupplies(d)">Xóa</a>
+                                                            <a type="button" class="text-primary" data-toggle="modal"
+                                                                data-target="#dentalSuppliesModel"
+                                                                ng-click="editDentalSupply(d)">Sửa</a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div> <!-- simple table -->
+                        </div> <!-- end section -->
+                    </div> <!-- .col-12 -->
+                </div> <!-- .row -->
+            </div> <!-- .container-fluid -->
+            <!-- Modal -->
+            <!-- new dental supply modal -->
+            <div class="modal fade" id="dentalSuppliesModel" tabindex="-1" role="dialog"
+                aria-labelledby="dentalSuppliesModelLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="varyModalLabel">{{viewMode==1?'Thêm mới':'Cập nhật'}}</h5>
+                            <button type="button" id="btnDismissModalAddService" class="close" data-dismiss="modal"
+                                aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body p-4">
+                            <!-- <form> -->
+                            <div class="row">
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="form-outline mb-3">
+                                        <label class="form-label" for="manageMedicinesModalmedicineName">Tên phân
+                                            phối
+                                        </label>
+                                        <input type="text" id="manageMedicinesModalmedicineName"
+                                            ng-model="editDentalSupplies.suppliesName" class="form-control"
+                                            placeholder="Tên phân phối" required />
+                                        <span class="text-danger" ng-show="errorSuppliesName">(*)Vui lòng nhập tên
+                                            phân phối</span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="form-outline mb-3">
+                                        <label class="form-label" for="manageMedicinesModaldistributionName">Nhà
+                                            phân phối</label>
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <select id="manageMedicinesModaldistributionName"
+                                                    class="form-control select2"
+                                                    ng-model="editDentalSupplies.distributionSupplies.distributionId">
+                                                    <option ng-repeat="d in listDistributionSuppliesFormDB"
+                                                        value="{{d.distributionId}}"
+                                                        ng-selected="d.distributionId == editDentalSupplies.distributionSupplies.distributionId">
+                                                        {{d.name}}
+                                                    </option>
+                                                </select>
+                                                <span class="text-danger" ng-show="errorDistributionSupplies">(*)
+                                                    Vui
+                                                    lòng chọn nhà phân phối</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 col-md-12">
+                                    <div class="form-outline mb-3">
+                                        <label class="form-label" for="manageMedicinesModalmedicineName">Ghi
+                                            chú
+                                        </label>
+                                        <textarea name="" id="" class="form-control"
+                                            ng-model="editDentalSupplies.description" placeholder="Ghi chú"
+                                            rows="5"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- </form> -->
+                        </div>
+                        <div class="modal-footer d-flex justify-content-arround">
+
+                            <button type="button" class="btn mb-2 btn-primary" ng-click="updateDentalSupply()">Lưu
+                                lại</button>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- new dental supply modal -->
+
+        </main>
+    </div>
+</div>

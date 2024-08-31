@@ -1,0 +1,23 @@
+
+<ul class="nav"> 
+    <img src="../assets/images/logo_tt.png"  alt="">
+    <li class="nav-item nav-notif">
+        <a class="nav-link text-muted my-2" onclick="event.preventDefault();" href="./#" data-toggle="modal" data-target=".modal-notif">
+          <span class="fe fe-bell fe-16"></span>
+          <span class="dot dot-md bg-success"></span>
+        </a>
+      </li>
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-muted pr-0" href="#" ng-click="$event.preventDefault()" id="navbarDropdownMenuLink" role="button"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="avatar avatar-sm mt-2">
+                <img src="/assets/images/avatars/ntt.jpeg" alt="..." class="avatar-img rounded-circle">
+            </span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" style="left: auto !important;" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" href="#!admin/my-profile">Thông tin cá nhân</a>
+            <a class="dropdown-item" href="#!login">Đăng xuất</a>
+        </div>
+    </li>
+</ul>  
+<div class="admin-notify" ng-include="'component/admin-notify.html'"></div>

@@ -1,0 +1,162 @@
+<div class="vertical  dark ">
+    <div class="wrapper">
+        <nav class="topnav navbar navbar-light justify-content-end" ng-include="'component/admin-nav.html'">
+        </nav>
+        <aside class="sidebar-left border-right shadow" id="leftSidebar" ng-include="'component/admin-aside.html'"
+            data-simplebar>
+        </aside>
+        <main role="main" class="main-content" ng-controller="AdminListService">
+            <div class="container-fluid">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                    </ol>
+                </nav>
+                <div class="d-flex flex-items-center flex-justify-between custom-heading">
+                    <h3 class="text-secondary">Danh sách dịch vụ nha khoa</h3>
+                </div>
+                <div class="custom-hr mb-3"></div>
+                <div class="row justify-content-center">
+                    <div class="col-12">
+                        <p class="card-text"></p>
+                        <div class="row my-4">
+                            <!-- Small table -->
+                            <div class="col-md-12">
+                                <div class="row align-items-center my-3">
+                                    <div class="col">
+                                        <!-- <h2 class="page-title p-0">Đặt lịch</h2> -->
+                                    </div>
+                                    <div class="col-auto">
+                                        <button type="button" class="btn btn-success" ng-click="refreshData()">
+                                            <span class="fe fe-plus fe-16 mr-3"></span>
+                                            Làm mới dữ liệu
+                                        </button>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                            data-target="#serviceModal" ng-click="modalMode(1,'')"><span
+                                                class="fe fe-plus fe-16 mr-3"></span>Thêm
+                                            dịch vụ</button>
+                                    </div>
+                                </div>
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <!-- table -->
+                                        <table class="table datatables" id="dataTable-list-service">
+                                            <thead>
+                                                <tr>
+                                                    <th>Mã dịch vụ</th>
+                                                    <th>Tên dịch vụ</th>
+                                                    <th>Giá</th>
+                                                    <th>Loại</th>
+                                                    <th>Thời gian thực hiện</th>
+                                                    <th>Mô tả</th>
+                                                    <th>Trạng thái</th>
+                                                    <th>Thao tác</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="s in listServiceFromDB">
+                                                    <td>{{s.serviceId}}</td>
+                                                    <td>{{s.serviceName}}</td>
+                                                    <td>{{s.price | formatPrice}}</td>
+                                                    <td>{{s.serviceType.typeName}}</td>
+                                                    <td>{{s.timeEstimate}} phút</td>
+                                                    <td>{{s.description}}</td>
+                                                    <td>
+                                                        <p ng-if="s.deleted" type="text" disabled
+                                                            style="width: 20px; height: 20px; border-radius: 50%; background-color: rgb(239, 17, 17); color: transparent;">
+                                                            Ngừng hoạt động</p>
+                                                        <p ng-if="!s.deleted" type="text" disabled
+                                                            style="width: 20px; height: 20px; border-radius: 50%; background-color: rgb(47, 255, 0); color: transparent;">
+                                                            Đang hoạt động</p>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex">
+                                                            <a type="button" class="text-danger mr-3"
+                                                                ng-click="deleteService(s,$event)">Xóa</a>
+                                                            <a type="button" class="text-primary" data-toggle="modal"
+                                                                data-target="#serviceModal"
+                                                                ng-click="modalMode(2,s)">Sửa</a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div> <!-- simple table -->
+                        </div> <!-- end section -->
+                    </div> <!-- .col-12 -->
+                </div> <!-- .row -->
+            </div> <!-- .container-fluid -->
+            <!-- Modal -->
+            <!-- new service modal -->
+            <div class="modal fade" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="serviceModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="varyModalLabel">{{viewMode==1?'Thêm mới':'Cập nhật'}}</h5>
+                            <button type="button" id="btnDismissModalAddService" class="close" data-dismiss="modal"
+                                aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body p-4">
+                            <!-- <form> -->
+                            <div class="form-group" ng-show="viewMode==2">
+                                <input type="text" class="form-control" id="serviceId" ng-model="formService.serviceId"
+                                    disabled hidden>
+                            </div>
+                            <div class="form-group">
+                                <label for="serviceName" class="col-form-label">Tên dịch vụ</label>
+                                <input type="text" class="form-control" id="serviceName" placeholder="Nhập Tên dịch vụ"
+                                    ng-model="formService.serviceName">
+                            </div>
+                            <div class="form-group">
+                                <label for="price" class="col-form-label">Giá dịch vụ</label>
+                                <input type="number" min="0" class="form-control text-right" id="price"
+                                    placeholder="Nhập giá dịch vụ" ng-model="formService.price">
+                            </div>
+                            <div class="form-group">
+                                <label for="timeEstimate" class="col-form-label">Thời gian ước lượng (phút)</label>
+                                <input type="number" min="0" class="form-control text-right" id="timeEstimate"
+                                    placeholder="Nhập thời gian " ng-model="formService.timeEstimate">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-8">
+                                    <label for="serviceTypeId">Loại dịch vụ</label>
+                                    <select id="serviceTypeId" class="form-control select2"
+                                        ng-model="formService.serviceTypeId"
+                                        ng-options="type.service_TypeId as type.typeName for type in listServiceTypeDB">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="description" class="col-form-label">Mô tả</label>
+                                <textarea class="form-control" id="description" placeholder="Nhập mô tả"
+                                    ng-model="formService.description"></textarea>
+                            </div>
+                            <div class="form-check" ng-show="viewMode == 2">
+                                <input class="form-check-input" type="checkbox" value="" id="formServiceDelete"
+                                    ng-model="formService.deleted" ng-checked="formService.deleted">
+                                <label class="form-check-label" for="formServiceDelete">
+                                    Hủy kích hoạt
+                                </label>
+                            </div>
+                            <!-- </form> -->
+                        </div>
+                        <div class="modal-footer d-flex justify-content-arround">
+                            <button type="button" class="btn mb-2 btn-info" ng-show="viewMode == 1"
+                                ng-click="resetForm()">Làm mới</button>
+                            <button type="button" class="btn mb-2 btn-success" ng-show="viewMode == 1"
+                                ng-click="createService()">Thêm mới</button>
+                            <button type="button" class="btn mb-2 btn-primary" ng-show="viewMode == 2"
+                                ng-click="updateService()">Lưu lại</button>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- new service modal -->
+        </main>
+    </div>
+</div>

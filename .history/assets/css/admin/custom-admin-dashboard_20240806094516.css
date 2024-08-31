@@ -1,0 +1,14 @@
+#filterByMoth {
+    border: none; /* Remove border */
+    background-color: #d1ecf1; /* Background color matching Bootstrap 'info' color */
+    color: #0c5460; /* Text color matching Bootstrap 'info' color */
+    border-radius: .25rem; /* Optional: match Bootstrap form control border-radius */
+    padding: .375rem .75rem; /* Optional: match Bootstrap form control padding */
+}
+
+/* Optional: adjust the focus state if needed */
+#filterByMoth:focus {
+    border: none; /* Ensure no border on focus */
+    box-shadow: none; /* Remove default focus shadow */
+    outline: none; /* Remove outline */
+}

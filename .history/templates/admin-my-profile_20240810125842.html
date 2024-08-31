@@ -1,0 +1,77 @@
+<div class="vertical  dark ">
+    <div class="wrapper">
+        <nav class="topnav navbar navbar-light justify-content-end" ng-include="'component/admin-nav.html'">
+        </nav>
+        <aside class="sidebar-left border-right shadow" id="leftSidebar" ng-include="'component/admin-aside.html'"
+            data-simplebar>
+        </aside>
+        <main role="main" class="main-content" ng-controller="AdminMyProfileController">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                </ol>
+            </nav>
+            <div class="container-fluid">
+                <div class="row justify-content-center mb-3">
+                    <div class="col-12">
+                        <div class="d-flex flex-items-center flex-justify-between custom-heading">
+                            <h3 class="text-secondary">Hồ sơ của tôi</h3>
+                        </div>
+                        <div class="row align-items-center">
+                            <div class="col-md-3 text-center">
+                                <div class="avatar avatar-xl mb-3">
+                                    <img ng-src="{{abc}}" alt="..." class="avatar-img rounded-circle">
+                                </div>
+                                <button class="btn btn-outline-primary small">Đổi ảnh đại diện</button>
+                                <div class="input-file" hidden>
+                                    <div class="form-outline mb-3">
+                                        <label class="form-label"
+                                            for="manageDoctorsModaldoctorsImage">Chọn
+                                            ảnh
+                                            Bác sĩ</label>
+                                        <input type="file" accept="image/*" multiple
+                                            onchange="angular.element(this).scope().uploadImg(this.files)"
+                                            id="manageDoctorsModaldoctorsImage"
+                                            class="form-control">
+                                        <div class="p-3 mt-3 d-flex justify-content-center flex-wrap"
+                                            style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); border-radius: 10px;"
+                                            ng-if="filenames.length > 0">
+                                            <label class="m-2"
+                                                ng-repeat="filename in filenames"
+                                                title="Double click để xóa">
+                                                <img ng-src="{{urlImg(filename)}}"
+                                                    ng-dblclick="deleteImg(filename)"
+                                                    width="100" height="100">
+                                                <p>{{filename}}</p>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="row align-items-center">
+                                    <div class="col-md-7">
+                                        <h4 class="mb-1">Brown, Asher</h4>
+                                        <p class="small mb-3"><span class="badge badge-dark">New York, USA</span></p>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <div class="col-md-7">
+                                        <p class="text-secondary"> Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                            Mauris blandit nisl ullamcorper, rutrum metus in, congue lectus. In hac
+                                            habitasse platea dictumst. Cras urna quam, malesuada vitae risus at, pretium
+                                            blandit sapien. </p>
+                                    </div>
+                                    <div class="col">
+                                        <p class="small mb-0 text-secondary">Nec Urna Suscipit Ltd</p>
+                                        <p class="small mb-0 text-secondary">P.O. Box 464, 5975 Eget Avenue</p>
+                                        <p class="small mb-0 text-secondary">(537) 315-1481</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>

@@ -1,0 +1,40 @@
+<div class="vertical  dark ">
+    <div class="wrapper">
+        <nav class="topnav navbar navbar-light justify-content-end" ng-include="'component/admin-nav.html'">
+        </nav>
+        <aside class="sidebar-left border-right shadow" id="leftSidebar" ng-include="'component/admin-aside.html'"
+            data-simplebar>
+        </aside>
+        <main role="main" class="main-content" ng-controller="AdminPostController">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                </ol>
+            </nav>
+            <div class="container-fluid">
+                <div class="row justify-content-center mb-3">
+                    <div class="col-12">
+                        <div class="d-flex flex-items-center flex-justify-between custom-heading">
+                            <h3 class="text-secondary">Thêm bài viết</h3>
+                        </div>
+                        <div class="custom-hr mb-3"></div>
+                        <div class="row align-items-center">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Editor</h5>
+                                        <p>Pages type scale includes a range of contrasting styles that support the
+                                            needs of your product and its content.</p>
+                                        <!-- Create the editor container -->
+                                        <div id="editor" style="min-height:100px;">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>

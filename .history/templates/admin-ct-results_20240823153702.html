@@ -1,0 +1,250 @@
+<div class="vertical  dark ">
+    <div class="wrapper">
+        <nav class="topnav navbar navbar-light justify-content-end" ng-include="'component/admin-nav.html'">
+        </nav>
+        <aside class="sidebar-left border-right shadow" id="leftSidebar" ng-include="'component/admin-aside.html'"
+            data-simplebar>
+        </aside>
+        <main role="main" class="main-content" ng-controller="AdminCTResultController">
+
+            <div class="container-fluid">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                    </ol>
+                </nav>
+                <div class="row justify-content-center mb-3">
+                    <div class="d-flex flex-items-center flex-justify-between custom-heading">
+                        <h3 class="text-secondary">Danh sách film chụp</h3>
+                    </div>
+                    <div class="custom-hr"></div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-12">
+                        <p class="card-text"></p>
+                        <div class="row my-4">
+                            <!-- Small table -->
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <!-- tabbb -->
+                                        <ul class="nav nav-pills mb-3" id="manageCTResults" role="tablist">
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link active" id="form-tab-ct-result"
+                                                    data-bs-toggle="tab"
+                                                    data-bs-target="#form-tab-pane-manage-ct-results" type="button"
+                                                    role="tab" aria-controls="form-tab-pane-manage-ct-results"
+                                                    aria-selected="true">
+                                                    <i class="bi bi-pencil-square"></i> Quản lý
+                                                </button>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link" id="list-tab-ct-result" data-bs-toggle="tab"
+                                                    data-bs-target="#list-tab-pane-ct-result" role="tab"
+                                                    aria-controls="list-tab-pane-ct-result" aria-selected="false">
+                                                    <i class="bi bi-list-check"></i> Danh sách
+                                                </button>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content" id="manageCTResultsTabContent">
+                                            <div class="tab-pane fade show active" id="form-tab-pane-manage-ct-results"
+                                                role="tabpanel" aria-labelledby="form-tab-ct-result" tabindex="0">
+                                                <div class="row align-items-center justify-content-center">
+                                                    <div class="col-lg col-sm-12 p-3 me-3 d-flex flex-column flex-wrap">
+                                                        <div class="row">
+                                                            <div class="col-lg-12 col-md-12">
+                                                                <div class="form-outline mb-3">
+                                                                    <label class="form-label"
+                                                                        for="manageCTResultsModalCTResultsImage">Chọn
+                                                                        ảnh</label>
+                                                                    <input type="file" accept="image/*" multiple
+                                                                        onchange="angular.element(this).scope().uploadImg(this.files)"
+                                                                        id="imageInput" ng-model="formCTResult.image"
+                                                                        class="form-control">
+                                                                    <div class="p-3 mt-3 d-flex justify-content-center flex-wrap"
+                                                                        ng-if="imageUrl" id="sld-js">
+                                                                        <label  id="zoom_img" class="m-2 slide_img" title="Double click để xóa">
+                                                                            <img id="selectedImage" 
+                                                                                ng-src="{{imageUrl}}"
+                                                                                ng-dblclick="deleteImg()"
+                                                                                style="width: 100px; height: auto;">
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Nhân viên chụp  -->
+                                                            <!-- <div class="col-lg-6 col-md-12">
+                                                                <div class="form-row">
+                                                                    <div class="form-group col-md-12">
+                                                                        <label for="dentalStaffId">Nhân viên
+                                                                            chụp</label>
+                                                                        <select id="dentalStaffId"
+                                                                            class="form-control select2"
+                                                                            ng-model="formCTResult.dentalStaffId"
+                                                                            ng-options="ds.dentalStaffId as ds.fullname for ds in listDentalStaffsDB">
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div> -->
+
+                                                            <!-- Bệnh nhân -->
+                                                            <div class="col-lg-6 col-md-12">
+                                                                <div class="form-row">
+                                                                    <div class="form-group col-md-12">
+                                                                        <label for="appointmentId">Bệnh nhân</label>
+                                                                        <select id="appointmentId"
+                                                                            class="form-control select2"
+                                                                            ng-model="formCTResult.appointmentId"
+                                                                            ng-options="a.appointmentId as (a.patient.fullName + ' - ' + a.patient.phoneNumber + ' - Ngày  ' + (a.appointmentDate | date:'dd-MM-yyyy') ) for a in listAppointmentsDB">
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Hướng chụp -->
+                                                            <div class="col-lg-6 col-md-12">
+                                                                <div class="form-row">
+                                                                    <div class="form-group col-md-12">
+                                                                        <label for="imagingPlanesId">Hướng chụp</label>
+                                                                        <select id="imagingPlanesId"
+                                                                            class="form-control select2"
+                                                                            ng-model="formCTResult.imagingPlanesId"
+                                                                            ng-options="i.imagingPlanesId as i.name for i in listImagingPlanesDB">
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Bất thường trong ảnh -->
+                                                            <div class="col-lg-6 col-md-12">
+                                                                <div class="form-row">
+                                                                    <div class="form-group col-md-12">
+                                                                        <label for="abnormalityId">Dấu hiệu bất
+                                                                            thường</label>
+                                                                        <select id="abnormalityId"
+                                                                            class="form-control select2-multi-abnormality"
+                                                                            ng-model="formCTResultAbnormality.abnormalityId"
+                                                                            ng-options="am.abnormalityId as am.name for am in listAbnormalitiesDB">
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-row"
+                                                                    ng-show="originalCtresultAbnormality.length!=0">
+                                                                    <p>Dấu hiệu trước đây</p>
+                                                                    <ul>
+                                                                        <li
+                                                                            ng-repeat="a in originalCtresultAbnormality">
+                                                                            {{a.abnormality.abnormalityId +"-"+a.abnormality.name
+                                                                            }}</li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Ngày chụp -->
+                                                            <div class="col-lg-6 col-md-12">
+                                                                <div class="form-outline mb-3">
+                                                                    <label class="form-label"
+                                                                        for="manageCTResultsModalCTResultDate">Ngày
+                                                                        chụp</label>
+                                                                    <input type="text"
+                                                                        id="manageCTResultsModalCTResultDate"
+                                                                        ng-model="formCTResult.date"
+                                                                        class="form-control drgpicker-ct"
+                                                                        placeholder="Ngày chụp">
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="d-flex justify-content-center mt-3">
+                                                            <button ng-click="createCTResult()"
+                                                                class="btn btn-success m-2"
+                                                                ng-show="!isUpdateCTResult&&!isLoadingCreate">Tạo
+                                                                mới</button>
+                                                            <button class="btn btn-outline-success" type="button"
+                                                                disabled ng-show="isLoadingCreate">
+                                                                <span class="spinner-border spinner-border-sm"
+                                                                    role="status" aria-hidden="true"></span>
+                                                                Đang xử lý...
+                                                            </button>
+                                                            <button ng-click="updateCTResult()"
+                                                                class="btn btn-primary m-2"
+                                                                ng-show="isUpdateCTResult&&!isLoadingUpdate">Cập
+                                                                nhật</button>
+                                                            <button class="btn btn-outline-primary" type="button"
+                                                                disabled ng-show="isLoadingUpdate">
+                                                                <span class="spinner-border spinner-border-sm"
+                                                                    role="status" aria-hidden="true"></span>
+                                                                Đang xử lý...
+                                                            </button>
+                                                            <button ng-click="resetForm()" class="btn btn-info m-2">Làm
+                                                                mới</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="list-tab-pane-ct-result" role="tabpanel"
+                                                aria-labelledby="list-tab-ct-result" tabindex="0">
+                                                <div class="card">
+                                                    <table class="table datatables" id="dataTable-list-ct-result">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Mã hình ảnh</th>
+                                                                <th>Hình ảnh</th>
+                                                                <th>Nhân viên chụp</th>
+                                                                <th>Bệnh nhân</th>
+                                                                <th>Hướng chụp</th>
+                                                                <th>Ngày chụp</th>
+                                                                <th>Vấn đề bất thường</th>
+                                                                <th>Thao tác</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr ng-repeat="cs in listCTResultsDB">
+                                                                <td>{{cs.appointmentCTResultId}}</td>
+                                                                <td><img ng-src="{{cs.imageURL}}" width="100"
+                                                                        height="100"></td>
+                                                                <td>{{cs.dentalStaff.fullname}}</td>
+                                                                <td>{{cs.appointment.patient.fullName}}</td>
+                                                                <td>{{cs.imagingPlanes.name}}</td>
+                                                                <td>{{cs.date|dateFormat}}</td>
+                                                                <td>
+                                                                    <ul>
+                                                                        <li ng-repeat="rs in showCTResultAbnormality(cs.appointmentCTResultId)">
+                                                                            {{rs.abnormality.name}}
+                                                                        </li>
+                                                                    </ul>
+                                                                </td>
+                                                                <td><button
+                                                                        class="btn btn-sm dropdown-toggle more-horizontal"
+                                                                        type="button" data-toggle="dropdown"
+                                                                        aria-haspopup="true" aria-expanded="false">
+                                                                        <span class="text white">...</span>
+                                                                    </button>
+                                                                    <div class="dropdown-menu dropdown-menu-right"
+                                                                        style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); border-radius: 10px;">
+                                                                        <a class="dropdown-item text-primary"
+                                                                            ng-click="editCTResult(cs,$event)" href="#"
+                                                                            style="font-size: 18px;">Sửa</a>
+                                                                        <a class="dropdown-item text-danger"
+                                                                            ng-click="deleteCTResult(cs,$event)"
+                                                                            href="#" style="font-size: 18px;">Xóa</a>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- end tabb -->
+                                    </div>
+                                </div>
+                            </div> <!-- simple table -->
+                        </div> <!-- end section -->
+                    </div> <!-- .col-12 -->
+                </div> <!-- .row -->
+            </div> <!-- .container-fluid -->
+
+        </main>
+    </div>
+</div>
